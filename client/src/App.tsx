@@ -48,6 +48,7 @@ function App() {
       <Switch>
         {/* Login page */}
         <Route path="/" component={LoginPage} />
+        <Route path="/auth" component={LoginPage} />
         
         {/* Whistleblower routes */}
         <Route path="/whistleblower/:rest*">
