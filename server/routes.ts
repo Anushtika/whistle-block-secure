@@ -61,11 +61,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUserByUsername(username);
       
       if (!user || user.password !== password || user.role !== role) {
+        console.error(`Login failed for user: ${username}, role: ${role}`);
         throw new ApiError(401, "Invalid credentials");
       }
       
       req.session.userId = user.id;
       req.session.role = user.role;
+      
+      console.log(`User successfully logged in: ${username}, role: ${role}, id: ${user.id}`);
       
       res.json({ 
         id: user.id, 

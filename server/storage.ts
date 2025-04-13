@@ -65,6 +65,130 @@ export class MemStorage implements IStorage {
     this.attachmentIdCounter = 1;
     this.messageIdCounter = 1;
     this.eventIdCounter = 1;
+    
+    // Initialize with some demo users
+    this.initializeDemoData();
+  }
+  
+  private initializeDemoData() {
+    // Create whistleblower user
+    const whistleblower = {
+      id: this.userIdCounter++,
+      username: "whistleblower",
+      password: "password123",
+      role: "whistleblower",
+      publicKey: "demo_public_key_1",
+      privateKeyEncrypted: "demo_encrypted_private_key_1"
+    };
+    this.users.set(whistleblower.id, whistleblower);
+    
+    // Create investigator user
+    const investigator = {
+      id: this.userIdCounter++,
+      username: "investigator",
+      password: "password123",
+      role: "investigator",
+      publicKey: "demo_public_key_2",
+      privateKeyEncrypted: "demo_encrypted_private_key_2"
+    };
+    this.users.set(investigator.id, investigator);
+    
+    // Create some example reports
+    const report1 = {
+      id: this.reportIdCounter++,
+      reportId: `TN-2023-001`,
+      type: "Corruption",
+      department: "Public Works Department",
+      location: "Chennai",
+      subject: "Suspicious Contract Allocation",
+      description: "I have observed that contracts are being awarded without proper tender process in the Public Works Department.",
+      submittedAt: new Date(2023, 3, 15),
+      status: "Under Investigation",
+      isAnonymous: true,
+      allowCommunication: true,
+      whistleblowerId: whistleblower.id,
+      assignedInvestigatorId: investigator.id,
+      blockchainHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+      encryptionKey: "demo_encryption_key_1"
+    };
+    this.reports.set(report1.id, report1);
+    
+    const report2 = {
+      id: this.reportIdCounter++,
+      reportId: `TN-2023-002`,
+      type: "Fraud",
+      department: "Tax Department",
+      location: "Coimbatore",
+      subject: "Tax Evasion Scheme",
+      description: "I have evidence of a coordinated tax evasion scheme involving several businesses and officials.",
+      submittedAt: new Date(2023, 5, 22),
+      status: "New",
+      isAnonymous: false,
+      allowCommunication: true,
+      whistleblowerId: whistleblower.id,
+      assignedInvestigatorId: null,
+      blockchainHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      encryptionKey: "demo_encryption_key_2"
+    };
+    this.reports.set(report2.id, report2);
+    
+    // Create sample attachments
+    const attachment1 = {
+      id: this.attachmentIdCounter++,
+      reportId: report1.id,
+      fileName: "evidence.pdf",
+      fileType: "application/pdf",
+      ipfsHash: "QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX",
+      encryptedKey: "encrypted_key_for_attachment_1",
+      uploadedAt: new Date(2023, 3, 16)
+    };
+    this.attachments.set(attachment1.id, attachment1);
+    
+    // Create sample messages
+    const message1 = {
+      id: this.messageIdCounter++,
+      reportId: report1.id,
+      senderId: whistleblower.id,
+      encryptedContent: "I have additional evidence to share regarding this case.",
+      encryptionKey: "message_encryption_key_1",
+      sentAt: new Date(2023, 3, 18),
+      isRead: true
+    };
+    this.messages.set(message1.id, message1);
+    
+    const message2 = {
+      id: this.messageIdCounter++,
+      reportId: report1.id,
+      senderId: investigator.id,
+      encryptedContent: "Thank you for your report. Could you provide more details about the parties involved?",
+      encryptionKey: "message_encryption_key_2",
+      sentAt: new Date(2023, 3, 19),
+      isRead: true
+    };
+    this.messages.set(message2.id, message2);
+    
+    // Create sample blockchain events
+    const event1 = {
+      id: this.eventIdCounter++,
+      reportId: report1.id,
+      eventType: "ReportCreated",
+      data: { reportId: report1.reportId },
+      transactionHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+      blockNumber: 12345678,
+      timestamp: new Date(2023, 3, 15)
+    };
+    this.smartContractEvents.set(event1.id, event1);
+    
+    const event2 = {
+      id: this.eventIdCounter++,
+      reportId: report1.id,
+      eventType: "StatusChanged",
+      data: { status: "Under Investigation" },
+      transactionHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      blockNumber: 12345680,
+      timestamp: new Date(2023, 3, 17)
+    };
+    this.smartContractEvents.set(event2.id, event2);
   }
   
   // User operations

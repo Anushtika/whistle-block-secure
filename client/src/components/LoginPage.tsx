@@ -86,6 +86,14 @@ export default function LoginPage() {
               </Avatar>
             </div>
             
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <h3 className="text-sm font-medium text-blue-800">Demo Credentials:</h3>
+              <ul className="mt-2 text-xs text-blue-700 space-y-1">
+                <li><strong>Whistleblower:</strong> username: "whistleblower", password: "password123"</li>
+                <li><strong>Investigator:</strong> username: "investigator", password: "password123"</li>
+              </ul>
+            </div>
+            
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
