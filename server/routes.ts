@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage-db"; // Changed from in-memory to database storage
 import { insertUserSchema, insertReportSchema, insertAttachmentSchema, insertMessageSchema, insertSmartContractEventSchema } from "@shared/schema";
 import session from "express-session";
 import { z } from "zod";
@@ -30,6 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       resave: false,
       saveUninitialized: false,
       cookie: { secure: process.env.NODE_ENV === "production", maxAge: 24 * 60 * 60 * 1000 },
+      store: storage.sessionStore
     })
   );
 
