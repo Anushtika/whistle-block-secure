@@ -40,6 +40,12 @@ export default function LoginPage() {
   
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
+      console.log("Attempting login with:", {
+        username: data.username,
+        password: "***" /* masked for logs */,
+        role: data.role
+      });
+      
       const user = await apiRequest("POST", "/api/auth/login", {
         username: data.username,
         password: data.password,
@@ -47,6 +53,7 @@ export default function LoginPage() {
       });
       
       const userData = await user.json();
+      console.log("Login successful:", userData);
       
       toast({
         title: "Login successful",
@@ -60,6 +67,7 @@ export default function LoginPage() {
         setLocation("/investigator/dashboard");
       }
     } catch (error) {
+      console.error("Login error:", error);
       toast({
         title: "Login failed",
         description: error instanceof Error ? error.message : "Invalid credentials",

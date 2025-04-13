@@ -7,11 +7,18 @@ import InvestigatorLayout from "@/components/InvestigatorLayout";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
+// User type definition to match backend response
+interface User {
+  id: number;
+  username: string;
+  role: string;
+}
+
 function App() {
   const [location, setLocation] = useLocation();
   
   // Check authentication status
-  const { data: user, isLoading, isError } = useQuery({
+  const { data: user, isLoading, isError } = useQuery<User | null>({
     queryKey: ['/api/auth/me'],
     retry: false,
     refetchOnWindowFocus: false
@@ -44,12 +51,12 @@ function App() {
         
         {/* Whistleblower routes */}
         <Route path="/whistleblower/:rest*">
-          {(params) => <WhistleblowerLayout params={params} />}
+          {(params) => <WhistleblowerLayout params={{ rest: params["rest*"] || "" }} />}
         </Route>
         
         {/* Investigator routes */}
         <Route path="/investigator/:rest*">
-          {(params) => <InvestigatorLayout params={params} />}
+          {(params) => <InvestigatorLayout params={{ rest: params["rest*"] || "" }} />}
         </Route>
         
         {/* Fallback to 404 */}
