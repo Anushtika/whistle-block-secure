@@ -55,21 +55,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { username, password, role } = req.body;
       
-      if (!username || !password || !role) {
-        throw new ApiError(400, "Username, password, and role are required");
+      if (!username || !password) {
+        throw new ApiError(400, "Username and password are required");
       }
       
       const user = await storage.getUserByUsername(username);
       
-      if (!user || user.password !== password || user.role !== role) {
-        console.error(`Login failed for user: ${username}, role: ${role}`);
+      if (!user || user.password !== password) {
+        console.error(`Login failed for user: ${username}, role: ${role || 'not specified'}`);
+        throw new ApiError(401, "Invalid credentials");
+      }
+      
+      // If role is specified, ensure it matches
+      if (role && user.role !== role) {
+        console.error(`Login failed - role mismatch: ${username}, expected: ${role}, actual: ${user.role}`);
         throw new ApiError(401, "Invalid credentials");
       }
       
       req.session.userId = user.id;
       req.session.role = user.role;
       
-      console.log(`User successfully logged in: ${username}, role: ${role}, id: ${user.id}`);
+      console.log(`User successfully logged in: ${username}, role: ${user.role}, id: ${user.id}`);
       
       res.json({ 
         id: user.id, 

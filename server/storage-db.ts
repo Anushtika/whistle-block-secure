@@ -74,7 +74,11 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createUser(userData: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(userData).returning();
+    const result = await db.insert(users).values({
+      ...userData,
+      publicKey: userData.publicKey ?? null,
+      privateKeyEncrypted: userData.privateKeyEncrypted ?? null
+    }).returning();
     return result[0];
   }
   
@@ -87,7 +91,11 @@ export class DatabaseStorage implements IStorage {
       status: 'New',
       submittedAt: new Date(),
       blockchainHash: `0x${Math.random().toString(16).slice(2)}`, // Simulated hash
-      assignedInvestigatorId: null
+      assignedInvestigatorId: null,
+      // Ensure boolean fields are always defined (not undefined)
+      isAnonymous: reportData.isAnonymous ?? false,
+      allowCommunication: reportData.allowCommunication ?? true,
+      encryptionKey: reportData.encryptionKey ?? null
     };
     
     const result = await db.insert(reports).values(report).returning();
@@ -147,7 +155,8 @@ export class DatabaseStorage implements IStorage {
       .insert(attachments)
       .values({
         ...attachmentData,
-        uploadedAt: new Date()
+        uploadedAt: new Date(),
+        encryptedKey: attachmentData.encryptedKey ?? null
       })
       .returning();
     return result[0];
@@ -164,7 +173,9 @@ export class DatabaseStorage implements IStorage {
       .values({
         ...messageData,
         sentAt: new Date(),
-        isRead: false
+        isRead: false,
+        senderId: messageData.senderId ?? null,
+        encryptionKey: messageData.encryptionKey ?? null
       })
       .returning();
     return result[0];
